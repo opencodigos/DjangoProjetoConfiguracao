@@ -1,1 +1,1 @@
-# config-default-simples
+# config-default-simple
