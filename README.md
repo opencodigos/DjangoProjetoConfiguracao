@@ -1,17 +1,15 @@
-# Django Configuração de Projeto Padrão (Simples)
+# Django 5 - Configuração de Projeto (Simples)
+
+Atualizado - 10/2025
 
 Essa configuração simples de projeto django que utilizo para fazer testes e criar aplicações locais.
 
 Espero que ajude !!!
 
-Esse é link do Vídeo Tutorial [Link](https://www.youtube.com/watch?v=0y5YdiK7x0k)
+Esse é link do Vídeo Tutorial [Link](https://youtu.be/x6WX2zwXj-Y) 
 
-**Configurações Iniciais**
-
-<details><summary><b>Ambiente Virtual Linux/Windows</b></summary>
-
-- **Ambiente Virtual Linux/Windows**
-    
+<details>
+<summary>*Ambiente Virtual Linux/Windows*</summary>
     
     Lembrando… Precisa ter Python instalado no seu ambiente.
     
@@ -40,15 +38,9 @@ Esse é link do Vídeo Tutorial [Link](https://www.youtube.com/watch?v=0y5YdiK7x
     ```python
     pip freeze > requirements.txt
     ```
-
 </details>
-
-<details><summary><b>Criando o Projeto</b></summary>
-
-- **Criando o Projeto**
-    
-    ## **Criando o projeto**
-    
+<details>
+<summary>*Criando o Projeto*</summary>  
     “core” é nome do seu projeto e quando colocamos um “.” depois do nome do projeto significa que é para criar os arquivos na raiz da pasta. Assim não cria subpasta do projeto.
     
     ```python
@@ -60,66 +52,105 @@ Esse é link do Vídeo Tutorial [Link](https://www.youtube.com/watch?v=0y5YdiK7x
     ```python
     python manage.py runserver
     ```
-    
 </details>
-
-<details><summary><b>Configurar Settings e Arquivos Static</b></summary>
-
-- **Configurar Settings e Arquivos Static**
+<details>
+<summary>*Configurar Settings e Arquivos Static*</summary>  
     
-    ## **Vamos configurar nossos arquivos** *static*
+    Perfeito 👇 aqui está **tudo numerado e organizado** pra copiar direto:
+    
+    ---
+    
+    ### **Achar pasta `templates`**
     
     ```python
-    import os 
+    # Templates
+    'DIRS': [TEMPLATES_DIR := BASE_DIR / 'templates'],
+    ```
     
-    # base_dir config
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
-    STATIC_DIR=os.path.join(BASE_DIR,'static')
+    ---
     
-    # Database
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 
-        }
-    }
+    ### **Rotas de autenticação**
     
-    STATIC_ROOT = os.path.join(BASE_DIR,'static')
-    STATIC_URL = '/static/' 
+    ```python
+    # Autenticação
+    LOGIN_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = '/'
+    ```
     
-    MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+    ---
+    
+    ### **Arquivos estáticos / mídia**
+    
+    ```python
+    # Arquivos estáticos
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+    
+    # Usado apenas em produção para collectstatic
+    # STATIC_ROOT = BASE_DIR / 'staticfiles'
+    
+    # Arquivos de mídia
     MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+    ```
     
-    # Internationalization
-    # Se quiser deixar em PT BR
+    ---
+    
+    ### **Traduções**
+    
+    ```python
+    # Traduções
+    LOCALE_PATHS = [BASE_DIR / 'locale']
+    ```
+    
+    ---
+    
+    ### **Internacionalização**
+    
+    ```python
+    # Internacionalização
     LANGUAGE_CODE = 'pt-br'
     TIME_ZONE = 'America/Sao_Paulo'
     USE_I18N = True
-    USE_L10N = True 
+    USE_L10N = True
     USE_TZ = True
     ```
+    
+    ---
+    
+    ### **Configuração de e-mail**
+    
+    ```python
+    # Configuração de e-mail
+    DEFAULT_FROM_EMAIL = 'noreply@seudominio.com'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    
+    ```
+    
+    ---
     
     *myapp/urls.py*
     
     ```python
-    from django.contrib import admin
+    from django.contrib import admin 
+    from django.urls import path, include
+    
     from django.conf import settings
     from django.conf.urls.static import static
-    from django.urls import path
     
     urlpatterns = [
-        path('admin/', admin.site.urls),
-    ]
+        path('admin/', admin.site.urls), 
+    ] 
     
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # Adicionar Isto
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Adicionar Isto
+    # Somente Quando Debug é True.
+    if settings.DEBUG:  
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    
     ```
 </details>
-
-<details><summary><b>Criando Aplicativo</b></summary>
-
-- **Criando Aplicativo**
+<details>
+<summary>*Criando Aplicativo*</summary>   
     
     **Vamos criar nosso aplicativo no Django.**
     
@@ -130,70 +161,136 @@ Esse é link do Vídeo Tutorial [Link](https://www.youtube.com/watch?v=0y5YdiK7x
     ```
     
     Agora precisamos registrar nossa aplicação no *INSTALLED_APPS* localizado em *settings.py*.
-    
 </details>
-
-<details><summary><b>Template base e Bootstrap Configuração</b></summary>
-
-- **Template base e Bootstrap Configuração**
-    
+<details>
+<summary>*Template base e Bootstrap Configuração*</summary>  
     ### Bootstrap configuração
     
-    Doc: [https://getbootstrap.com/docs/5.2/getting-started/introduction/](https://getbootstrap.com/docs/5.2/getting-started/introduction/)
+    Doc: https://getbootstrap.com/docs/5.2/getting-started/introduction/
     
     Com Base na documentação para utilizar os recursos Boostrap basta adicionar as tags de CSS e JS. No HTML da Pagina Base.
     
     ```python
     <!-- CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     
     <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
     ```
     
     ## Template Base
     
     1 - criar um arquivo base ***base.html*** onde vamos renderizar nosso conteúdo. 
     
-    ```python
+    ```html
     {% load static %}
     <!DOCTYPE html>
     <html lang="en">
     <head>
-    	<meta charset="UTF-8">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    	<title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <title>{% block title %}Django Site{% endblock %}</title>
     
-    	<!-- CSS -->
-    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    
-    </head>
-    <body>  
-    	
-    	{% block content %}
-    	
-    	{% endblock %} 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
      
-    	<!-- JS-->
-    	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    
+        <!-- Bootstrap CSS (v5) -->
+    		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    
+        <!-- Font Awesome (v6) -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+        
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body> 
+    		
+    		<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="#index"><i class="fa-solid fa-leaf"></i> Django Site</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#index"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-info-circle"></i> Sobre</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-envelope"></i> Contato</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+        <div class="container">
+            {% block content %} 
+            {% endblock %}
+        </div>
+    
+        <!-- jQuery (v3) -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+        <!-- Bootstrap JS Bundle -->
+    		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+        {% block extra_js %}{% endblock %}
     </body>
     </html>
     ```
-
-</details>
-
-<details><summary><b>Cria uma View</b></summary>
-
-- **Cria uma View**
     
-    *index1.html*
+    Messages
+    
+    ---
+    
+    ### **Configuração de mensagens (para Bootstrap)**
+    
+    ```python
+    from django.contrib.messages import constants as messages
+    
+    MESSAGE_TAGS = {
+        messages.DEBUG: 'secondary',
+        messages.INFO: 'info',
+        messages.SUCCESS: 'success',
+        messages.WARNING: 'warning',
+        messages.ERROR: 'danger',
+    }
+    
+    ```
+    
+    ---
     
     ```html
-    {% extends 'base.html' %}
-    {% block title %}Pagina Inicial{% endblock %}
-    {% block content %}
-    	<h1>Pagina Inicial</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    ```
+</details>
+<details>
+<summary>*Cria uma View*</summary>   
+    
+    Doc Herança de Template: https://docs.djangoproject.com/en/5.2/ref/templates/language/
+    
+    *index.html*
+    
+    ```html
+    {% extends "base.html" %}
+    {% load static %} 
+    {% block title %}Home - Django Site{% endblock %}
+    {% block content %} 
+    <h1>Página teste 1</h1> 
+    <p>Bem-vindo ao meu site Django!</p>
     {% endblock %}
     ```
     
@@ -203,60 +300,47 @@ Esse é link do Vídeo Tutorial [Link](https://www.youtube.com/watch?v=0y5YdiK7x
     from django.shortcuts import render
     
     # Create your views here.
-    def mysite(request):
-        return render(request, 'index1.html')
+    def index(request):
+        return render(request, 'index.html')
     ```
     
     criar arquivo *myapp*/*urls.py*
     
     ```
-    from django.urls import path 
-    from myapp import views
+    from django.urls import path
+    from .views import index
     
     urlpatterns = [
-        path('', views.mysite, name='mysite'), 
+        path('', index, name='index'),
     ]
     ```
     
     urls.py do projeto. ***core/urls.py***
     
     ```python
-    from django.contrib import admin
-    from django.urls import path, include # adicionar include
-    from django.conf import settings
-    from django.conf.urls.static import static 
-    
-    urlpatterns = [
-        path('admin/', admin.site.urls),
-        path('', include('myapp.urls')), # url do app
-    ]
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # Adicionar Isto
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Adicionar Isto
+    path('', include('myapp.urls')), # url do app
     ```
     
     Rodar o projeto para ver como está.
     
     ```python
-    python manage.py makemigrations && python manage.py migrate
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py createsuperuser
     python manage.py runserver
     ```
     
     .gitignore
     
     ```python
-    /tmp
-    passenger_wsgi.py 
+    /tmp 
     .venv
     db.sqlite3
-    /static_media
-    static_media
+    /media
+    media
     /static_files
     static_files
-    /media
-    mydatabase
-    file_name.sql
     __pycache__ 
     __pycache__/
     ```
-
-</details>
+</details> 
